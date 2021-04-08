@@ -29,7 +29,7 @@ puppeteer.launch({
             Forecast.High = item.querySelector("div.forecast > a:nth-child(-n+6) > div > span:nth-child(1) > span.temp-hi").innerHTML;
             Forecast.Low = item.querySelector("div.forecast > a:nth-child(-n+6) > div > span:nth-child(1) > span.temp-lo").innerHTML;
             Forecast.Desc = item.querySelector("div.forecast > a:nth-child(-n+6) > div > div").innerHTML;
-			Forecast.Rain = item.querySelector("div.precip > a:nth-child(-n+6) > div > div > span").innerHTML;
+	    Forecast.Rain = item.querySelector("div.precip > a:nth-child(-n+6) > div > div > span").innerHTML;
 		  
             ForecastData.push(Forecast);
         });
