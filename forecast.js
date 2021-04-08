@@ -1,4 +1,5 @@
 const puppeteer = require("puppeteer");
+const fs = require('fs');
 
 // starting Puppeteer
 puppeteer.launch({
@@ -37,15 +38,14 @@ puppeteer.launch({
         return JSON.stringify(ForecastData);
     });
   
-    // outputting the scraped data
-    
-	console.log(grabWeather);
-    //await fsp.writeFile(this.path, JSON.stringify(grabWeather, null, "\t")); 
+    // outputting the scraped data 
+    console.log(grabWeather); 
 
     // closing the browser
+    //await fs.writeFile('modules/MMM-Weather/forecast.js', grabWeather, null, "\t");
     await browser.close();
     //console.log("Browser Closed");
 
-}).catch(function(err) {
+   }).catch(function(err) {
     console.error(err);
-});
+   });
