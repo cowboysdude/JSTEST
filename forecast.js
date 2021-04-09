@@ -34,12 +34,12 @@ puppeteer.launch({
 	//  {"Day":"Fri 4/9","Icon":"//www.wunderground.com/static/i/c/v4/32.svg","High":"63°","Low":"50°","Desc":"Mostly Sunny","Rain":"0 in"}
 	//     .... and so on until the 5th child is reached. ]
 		
-            Forecast.Day = item.querySelectorAll("div.forecast-date > a:nth-child(-n+6) > div > div").innerHTML;
-	    Forecast.Icon = item.querySelectorAll("div.forecast > a:nth-child(-n+6) > div > span:nth-child(2) > img").getAttribute('src');
-            Forecast.High = item.querySelectorAll("div.forecast > a:nth-child(-n+6) > div > span:nth-child(1) > span.temp-hi").innerHTML;
-            Forecast.Low = item.querySelectorAll("div.forecast > a:nth-child(-n+6) > div > span:nth-child(1) > span.temp-lo").innerHTML;
-            Forecast.Desc = item.querySelectorAll("div.forecast > a:nth-child(-n+6) > div > div").innerHTML;
-	    Forecast.Rain = item.querySelectorAll("div.precip > a:nth-child(-n+6) > div > div > span").innerHTML;
+            Forecast.Day = item.querySelector("div.forecast-date > a:nth-child(-n+6) > div > div").innerHTML;
+	    Forecast.Icon = item.querySelector("div.forecast > a:nth-child(-n+6) > div > span:nth-child(2) > img").getAttribute('src');
+            Forecast.High = item.querySelector("div.forecast > a:nth-child(-n+6) > div > span:nth-child(1) > span.temp-hi").innerHTML;
+            Forecast.Low = item.querySelector("div.forecast > a:nth-child(-n+6) > div > span:nth-child(1) > span.temp-lo").innerHTML;
+            Forecast.Desc = item.querySelector("div.forecast > a:nth-child(-n+6) > div > div").innerHTML;
+	    Forecast.Rain = item.querySelector("div.precip > a:nth-child(-n+6) > div > div > span").innerHTML;
 		  
             ForecastData.push(Forecast);
         });
