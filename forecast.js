@@ -1,5 +1,4 @@
 const puppeteer = require("puppeteer");
-const fs = require('fs');
 
 // starting Puppeteer
 puppeteer.launch({
@@ -15,46 +14,41 @@ puppeteer.launch({
     // manipulating the page"s content
     let grabWeather = await page.evaluate(() => {
 
-	    // the selector below sets the stage for the Forecast.Day, etc.....
-	    
-        var allPosts = document.querySelectorAll("lib-forecast-chart-header-daily > div > div > div");
+        var allPosts = document.querySelectorAll("#inner-content > div.region-content-main > div:nth-child(1) > div > div:nth-child(1) > div > lib-forecast-chart > div > div");
  
         let ForecastData = [];
+		let Forecast = {};
         allPosts.forEach(item => {
-            let Forecast = {};
-	
-	// This is only returning the 1st item.  I've tried .map, append, a regular loop.... can only ever get the 1st item
-	// so the first nth child selector is returning from 1-6 [really 0-6] the second nth child is always the same
-	 
-		
-	// this is what it's returning..... so below it cycles and gets this:
-	// [{"Day":"Thu 4/8","Icon":"//www.wunderground.com/static/i/c/v4/34.svg","High":"73°","Low":"50°","Desc":"Mostly Sunny","Rain":"0 in"}] 	
-	// should be:
-	// [{"Day":"Thu 4/8","Icon":"//www.wunderground.com/static/i/c/v4/34.svg","High":"73°","Low":"50°","Desc":"Mostly Sunny","Rain":"0 in"}
-	//  {"Day":"Fri 4/9","Icon":"//www.wunderground.com/static/i/c/v4/32.svg","High":"63°","Low":"50°","Desc":"Mostly Sunny","Rain":"0 in"}
-	//     .... and so on until the 5th child is reached. ]
-		
-            Forecast.Day = item.querySelector("div.forecast-date > a:nth-child(-n+6) > div > div").innerHTML;
+            
+	//using querySelectorAll on the below elements returns nothing.......example:
+	//Forecast.Day = item.querySelectorAll("div.forecast-date > a:nth-child(-n+6) > div > div").innerHTML;
+		// still only returns the 1st item, not the next the 5......
+			
+	    Forecast.Day = item.querySelector("div.forecast-date > a:nth-child(-n+6) > div > div").innerHTML;
 	    Forecast.Icon = item.querySelector("div.forecast > a:nth-child(-n+6) > div > span:nth-child(2) > img").getAttribute('src');
             Forecast.High = item.querySelector("div.forecast > a:nth-child(-n+6) > div > span:nth-child(1) > span.temp-hi").innerHTML;
             Forecast.Low = item.querySelector("div.forecast > a:nth-child(-n+6) > div > span:nth-child(1) > span.temp-lo").innerHTML;
             Forecast.Desc = item.querySelector("div.forecast > a:nth-child(-n+6) > div > div").innerHTML;
 	    Forecast.Rain = item.querySelector("div.precip > a:nth-child(-n+6) > div > div > span").innerHTML;
-		  
-            ForecastData.push(Forecast);
+		   
         });
-
+		 
+		ForecastData.push(Forecast); 
+		 
         return JSON.stringify(ForecastData);
     });
   
-    // outputting the scraped data 
-    console.log(grabWeather); 
+    // outputting the data
+    
+	console.log(grabWeather);
+	
+	
+    //await fsp.writeFile(this.path, JSON.stringify(grabWeather, null, "\t")); 
 
     // closing the browser
-    //await fs.writeFile('modules/MMM-Weather/forecast.js', grabWeather, null, "\t");
     await browser.close();
     //console.log("Browser Closed");
 
-   }).catch(function(err) {
+}).catch(function(err) {
     console.error(err);
-   });
+});
