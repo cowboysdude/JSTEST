@@ -15,6 +15,8 @@ puppeteer.launch({
     // manipulating the page"s content
     let grabWeather = await page.evaluate(() => {
 
+	    // the selector below sets the stage for the Forecast.Day, etc.....
+	    
         var allPosts = document.querySelectorAll("lib-forecast-chart-header-daily > div > div > div");
  
         let ForecastData = [];
