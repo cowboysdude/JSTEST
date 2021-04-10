@@ -77,7 +77,9 @@ for(var i=0; i<values.length; i++){
 //  '{"day":"Mostly Sunny","icon":"Rain","high":"Showers","low":"Showers","desc":"Showers"}',
 //  '{"day":"0.13 in","icon":"0.82 in","high":"0.32 in","low":"0.39 in","desc":"0.14 in"}'
 //]
-///  getting closer but not there quite yet.... trying to figure out how to fill out the data correctly.  as you can see it's putting all the data from Day into the 1st object, and so forth	
+///  getting closer but not there quite yet.... trying to figure out how to fill out the data correctly.  as you can see it's putting all the data from Day into the 1st object, and so forth..
+// there will be 5 objects each containing day: Day, icon: Icon, high: High, low: Low, desc: Desc, rain: Rain..... 
+//  Suggestions on how I can do that?   Thank you!
   
      console.log(resultArray); 
     //await fsp.writeFile(this.path, JSON.stringify(grabWeather, null, "\t")); 
