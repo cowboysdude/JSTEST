@@ -1,79 +1,55 @@
-const puppeteer = require("puppeteer");
-var fsp = require('fs').promises;
+/* Magic Mirror
+ * Module: MMM-WOTD2
+ *
+ * By Cowboysdude
+ *
+ */
+const NodeHelper = require('node_helper');
+const request = require('request');
+const fs = require('fs');
+const exec = require('child_process').exec;
 
-// starting Puppeteer
-puppeteer.launch({
-    headless: false,
-    slowMo: 200 // 200ms slow down
-}).then(async browser => {
+module.exports = NodeHelper.create({
 
-    // opening a page
-    const page = await browser.newPage();
-    await page.goto("https://www.wunderground.com/forecast/us/ny/elmira/14904", {
-        waitUntil: "networkidle2"
-    });
-    await page.waitForSelector("body");
+    start: function() {
+        console.log("Starting module: " + this.name);
+    },
 
-    resultArray = [];
-    Forecast = {};
-    var Day, Icon, High, Low, Desc, Rain;
+    getDate: function() {
+        return (new Date()).toLocaleDateString();
+    },
 
-    Day = await page.evaluate((selector) => {
-        const list = document.querySelectorAll(selector);
-        const anchors = [...list];
-        return anchors.map(Day => Day.innerHTML);
-    }, 'div.forecast-date > a:nth-child(-n+8) > div > div');
-
-    Icon = await page.evaluate((selector) => {
-        const list = document.querySelectorAll(selector);
-        const anchors = [...list];
-        return anchors.map(Icon => Icon.getAttribute('src'));
-    }, "div.forecast > a:nth-child(-n+8) > div > span:nth-child(2) > img");
-
-    High = await page.evaluate((selector) => {
-        const list = document.querySelectorAll(selector);
-        const anchors = [...list];
-        return anchors.map(High => High.innerHTML);
-    }, "div.forecast > a:nth-child(-n+8) > div > span:nth-child(1) > span.temp-hi");
-
-    Low = await page.evaluate((selector) => {
-        const list = document.querySelectorAll(selector);
-        const anchors = [...list];
-        return anchors.map(Low => Low.innerHTML);
-    }, "div.forecast > a:nth-child(-n+8) > div > span:nth-child(1) > span.temp-lo");
-
-    Desc = await page.evaluate((selector) => {
-        const list = document.querySelectorAll(selector);
-        const anchors = [...list];
-        return anchors.map(Desc => Desc.innerHTML);
-    }, "div.forecast > a:nth-child(-n+8) > div > div");
-
-    Rain = await page.evaluate((selector) => {
-        const list = document.querySelectorAll(selector);
-        const anchors = [...list];
-        return anchors.map(Rain => Rain.innerHTML);
-    }, "div.precip > a:nth-child(-n+8) > div > div > span");
-
-    var keys = ["day", "icon", "high", "low", "desc", "rain"];
-    var values = [Day, Icon, High, Low, Desc, Rain];
-    var resultArray = [];
-    for (var i = 0; i < values.length; i++) {
-        var obj = {};
-        for (var j = 0; j < keys.length; j++) {
-            obj[keys[j]] = values[j][i];
+    getWORD: function() {
+    if (fs.existsSync("modules/MMM-WOTD2/wotd.json")) {
+        var temp = JSON.parse(fs.readFileSync("modules/MMM-WOTD2/wotd.json", "utf8"));
+        if (temp.timestamp === this.getDate()) {
+			console.log("File exists, sending data now");
+            this.sendSocketNotification('WORD_RESULT', temp);
+        } else {
+            console.log("file isn't right, creating new file now");
+            child = exec("node modules/MMM-WOTD2/index.js",
+                (error, stdout, stderr) => {
+                    var temp = JSON.parse(fs.readFileSync("modules/MMM-WOTD2/wotd.json", 'utf8'));
+                    setTimeout(() => {
+                        this.sendSocketNotification("WORD_RESULT", temp)
+                    }, 200);
+                });
         }
-        resultArray.push(obj);
+    } else {
+        console.log("file does not exist, creating it now");
+        child = exec("node modules/MMM-WOTD2/index.js",
+            (error, stdout, stderr) => {
+                var temp = JSON.parse(fs.readFileSync("modules/MMM-WOTD2/wotd.json", 'utf8'));
+                setTimeout(() => {
+                    this.sendSocketNotification("WORD_RESULT", temp)
+                }, 200);
+            });
     }
+},
 
-    // outputting the scraped data
-
-    console.log(JSON.stringify(resultArray));
-    await fsp.writeFile("forecast.json", JSON.stringify(resultArray));
-
-    // closing the browser
-    await browser.close();
-    //console.log("Browser Closed");
-
-}).catch(function(err) {
-    console.error(err);
+    socketNotificationReceived: function(notification, payload) {
+        if (notification === 'GET_WORD') {
+            this.getWORD(payload);
+        }
+    }
 });
