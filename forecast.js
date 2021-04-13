@@ -1,3 +1,27 @@
+
+socketNotificationReceived: function(notification, payload) {
+        if (notification === "WORD_RESULT") { 
+            this.processWORD(payload);
+        } else {
+        this.updateDom(loaddelay);
+		}
+		 this.updateDom();
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /* Magic Mirror
  * Module: MMM-WOTD2
  *
