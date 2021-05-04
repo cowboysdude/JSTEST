@@ -24,6 +24,10 @@ puppeteer.launch({
     resultArray = [];
     Forecast = {};
     var Hour, Day, Icon, High, Low, Desc, Rain, Like, Wind, Humidity, Baro, Visibility, UV;
+
+	////// when I console the TimeHour it returns 20, when I console.log the Hour it returns 20.....when it writes the data in the json file\
+	/////  it only writes 2.    Why is that?
+	
 	
 	var today = new Date();
     var TimeHour = today.getHours();
